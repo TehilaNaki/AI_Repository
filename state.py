@@ -5,6 +5,10 @@ The target for 8-puzzle is: (zero is the hole)
 345
 678
 '''
+'''
+Tehila Naki-323071571
+Merav Izhaki-322915430
+'''
 
 import random
 import math
@@ -53,11 +57,11 @@ def if_legal(x,m):                  # gets a board and a move and makes the move
     elif z<n*n-n and m=="v":        # check if the empty tile is not in the n's row and the move is down
         x[z]=x[z+n]
         x[z+n]=0
-
-# This is your HW
-#def hdistance(s):                   # the heuristic value of s
- #   return 0
-
+'''
+ This is your HW
+def hdistance(s):                   # the heuristic value of s
+   return 0
+'''
 '''
 def hdistance(s):
     c=0
@@ -65,26 +69,28 @@ def hdistance(s):
         if s[0].index(i)!=i:
             c+=1
     return c
-    '''
+  '''
+
 
 '''
-[[1, 2, 5, 6, 3, 4, 0, 7, 8], '']
-[[[0, 1, 2, 3, 4, 5, 6, 7, 8], '^>>^<<'], 12, 6]
-זו התוצאה לפי היוריסטיקה שהוצגה בכיתה. והתוצאה שלה טובה יותר מהתוצאה שלנו שהיא 
+התוצאה שקיבלנו טובה יותר מהתוצאה שהתקבלה בשיעור
+לפי היוריסטיקה שעשינו בשיעור התקבל הפלט:
 [[4, 3, 7, 5, 8, 6, 1, 0, 2], '']
-[[[0, 1, 2, 3, 4, 5, 6, 7, 8], '^>v<^<^>>v<^<vv>^^<v>^<'], 1377, 583]
-ולכן לא הושג שיפור וזה מפני שביוריסטיקה לפי מרחקי מנהטן אין התחשבות בשאר הלוח שזז בזמן שאנחנו סוכמים הזזות של ספרה אחת כל הלוח משתנה.
-לעומת זאת, כאשר מחשבים בעזרת היוריסטקה של כמה לא נמצאים במקומם לא מחשבים מקומות עודפים של הזזות 
+[[[0, 1, 2, 3, 4, 5, 6, 7, 8], '^>v<^<^>>v<^<vv>^<^>v<^'], 40175, 16920]
+ולפי היוריסטיקה של מרחקי מנהטן התקבל הפלט:
+[[4, 3, 7, 5, 8, 6, 1, 0, 2], '']
+[[[0, 1, 2, 3, 4, 5, 6, 7, 8], '^>v<^<^>>v<^<vv>^^<v>^<'], 1049, 454]
+וזהו שיפור משמעותי!!
+השיפור הושג מפני שביוריסטיקה הקודמת אין התחשבות בכמות ההזזות שצריך לעשות עבור כל מספר שממוקם נכון,
+ונסכם רק כמות המספרים שאינם במקומם וזה פחות מדוייק ותואם את ההזזות באמת.
 '''
-def hdistance(s):
+def hdistance(s):#Heuristic function according to Manhattan distances
     c=0
     for i in range(0,len(s[0])):
         x=abs((s[0])[i]-i)#distance between the right place
+        c += x % 3  # the moves left/right
         if x>3:
-            c+=x%3 #the moves left/right
             x/=3 # if it more than 3 go down/up
         c+=math.floor(x)
-        if ((s[0])[i]==6 and i==5) or ((s[0])[i]==3 and i==2): c+=2
-        #if is the numbers in the corner, it need more 2 steps to go next place
+        if ((s[0])[i]==6 and i==5) or ((s[0])[i]==3 and i==2): c+=2 #if is the numbers in the corner, it need more 2 steps to go next place/index
     return c
-

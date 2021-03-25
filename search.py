@@ -4,6 +4,7 @@ import frontier
 
 def search(n):
     s=state.create(n)
+    #s=[[4,3,7,5,8,6,1,0,2],'']
     print(s)
     f=frontier.create(s)
     while not frontier.is_empty(f):
