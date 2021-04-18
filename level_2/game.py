@@ -25,7 +25,7 @@ def create():
     board = []
     for i in range(ROWS):
         board = board + [COLUMN * [0]]
-    return [board, 0.00001, HUMAN, ROWS * COLUMN, [5,5,5,5,5,5]]
+    return [board, 0.00001, HUMAN, ROWS * COLUMN, [5,5,5,5,5,5,5]]
 
 
 def value(s):
@@ -133,7 +133,7 @@ def inputMove(s):
         if move <= 0 or move > COLUMN :
             print("Illegal place.")
         elif s[4][move-1]== -1 :
-            print("Ilegal place, the column is full.")
+            print("Illegal place, the column is full.")
         else:
             flag = False
             makeMove(s,move)
