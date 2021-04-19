@@ -156,5 +156,4 @@ def getNext(s):
                     tmp = copy.deepcopy(s)
                     makeMove(tmp, c)
                     ns += [tmp]
-        return ns
     return ns
