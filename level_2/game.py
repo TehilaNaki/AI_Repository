@@ -1,13 +1,18 @@
-import copy
 
+'''
+Tehila Naki-323071571
+Merav Izhaki-322915430
+'''
+
+import copy
 VIC = 10 ** 20  # The value of a winning board (for max)
 LOSS = -VIC  # The value of a losing board (for max)
 TIE = 0  # The value of a tie
 SIZE = 4  # The length of a winning sequence
 COMPUTER = SIZE + 1  # Marks the computer's cells on the board
 HUMAN = 1  # Marks the human's cells on the board
-ROWS = 6
-COLUMN = 7
+ROWS = 6  # Rows of the board
+COLUMN = 7  # Columns of the board
 
 '''
 The state of the game is represented by a list of 4 items:
@@ -24,8 +29,9 @@ def create():
     # Returns an empty board. The human plays first.
     board = []
     for i in range(ROWS):
-        board = board + [COLUMN * [0]]
-    return [board, 0.00001, HUMAN, ROWS * COLUMN, [5, 5, 5, 5, 5, 5, 5]]
+        board = board + [COLUMN * [0]]  # Creat the board
+    return [board, 0.00001, HUMAN, ROWS * COLUMN, [ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1,
+                                                   ROWS - 1]]  # Creat "s" and set up the list of how many empty in each column
 
 
 def value(s):
@@ -35,10 +41,10 @@ def value(s):
 
 def printState(s):
     # Prints the board. The empty cells are printed as numbers = the cells name(for input)
-    # If the game ended prins who won.
-    for r in range(ROWS):
+    # If the game ended prints who won.
+    for r in range(ROWS):  # print each row
         print("\n -- -- -- -- -- -- -- \n|", end="")
-        for c in range(COLUMN):
+        for c in range(COLUMN):  # print each column
             if s[0][r][c] == COMPUTER:
                 print("X |", end="")
             elif s[0][r][c] == HUMAN:
@@ -67,19 +73,17 @@ def isHumTurn(s):
 
 def whoIsFirst(s):
     # The user decides who plays first
-    # if int(input("Who plays first? 1-me / anything else-you. : ")) == 1:
-    s[2] = COMPUTER
-
-
-# else:
-#   s[2] == HUMAN
+    if int(input("Who plays first? 1-me / anything else-you. : ")) == 1:
+        s[2] = COMPUTER
+    else:
+        s[2] == HUMAN
 
 
 def checkSeq(s, r1, c1, r2, c2):
     # r1, c1 are in the board. if r2,c2 not on board returns 0.
     # Checks the seq. from r1,c1 to r2,c2. If all X returns VIC. If all O returns LOSS.
-    # If no Os returns 1. If no Xs returns -1, Otherwise returns 0.
-    if r2 < 0 or c2 < 0 or r2 >= ROWS or c2 >= COLUMN or s[0][r2][c2] != 0:
+    # If no Os returns 1. If no Xs returns -1, Othewise returns 0.
+    if r2 < 0 or c2 < 0 or r2 >= len(s[0]) or c2 >= len(s[0][0]):
         return 0  # r2, c2 are illegal
     dr = (r2 - r1) // (SIZE - 1)  # the horizontal step from cell to cell
     dc = (c2 - c1) // (SIZE - 1)  # the vertical step from cell to cell
@@ -98,27 +102,27 @@ def checkSeq(s, r1, c1, r2, c2):
 
 
 def makeMove(s, c):
-    # Puts mark (for huma. or comp.) in r,c
+    # Puts mark (for human. or comp.) in r,c
     # switches turns
     # and re-evaluates the heuristic value.
     # Assumes the move is legal.
-    r = s[4][c] # finde the next row of the column
+    r = s[4][c]  # find the next row of the column
     s[0][r][c] = s[2]  # marks the board
+    s[4][c] -= 1  # one less empty cell in the column  empty list
     s[3] -= 1  # one less empty cell
     s[2] = COMPUTER + HUMAN - s[2]  # switches turns
     dr = [-SIZE + 1, -SIZE + 1, 0, SIZE - 1]  # the next lines compute the heuristic val.
     dc = [0, SIZE - 1, SIZE - 1, SIZE - 1]
     s[1] = 0.00001
-    for row in range(len(s[0])):
-        for col in range(len(s[0][0])):
+    for row in range(ROWS):
+        for col in range(COLUMN):
             for i in range(len(dr)):
-                 t = checkSeq(s, row , col, row + dr[i], col + dc[i])
-                 if t in [LOSS, VIC]:
-                     s[1] = t
-                     return
-                 else:
+                t = checkSeq(s, row, col, row + dr[i], col + dc[i])
+                if t in [LOSS, VIC]:
+                    s[1] = t
+                    return
+                else:
                     s[1] += t
-    s[4][c] -= 1  # one less empty cell in the column
     if s[3] == 0:
         s[1] = TIE
 
@@ -129,27 +133,28 @@ def inputMove(s):
     flag = True
     while flag:
         move = int(input("Enter your next place: "))
-        if move <= 0 or move > COLUMN:
+        if move <= 0 or move > COLUMN:  # check if "move" is a legal index
             print("Illegal place.")
-        elif s[4][move - 1] == -1:
+        elif s[4][move - 1] == -1:  # check if the column is full
             print("Illegal place, the column is full.")
         else:
             flag = False
-            makeMove(s, move-1)
+            makeMove(s, move - 1)
 
 
 def getNext(s):
     # returns a list of the next states of s
     ns = []
-    if s[3]==42:
-         tmp = copy.deepcopy(s)
-         makeMove(tmp, 3)
-         ns += [tmp]
+    if s[3] == 42:
+        tmp = copy.deepcopy(s)
+        makeMove(tmp, 3)
+        ns += [tmp]
     else:
-          for c in range(COLUMN):
-              columnPlace = s[4][c]
-              if s[0][columnPlace][c] == 0:
-                  tmp = copy.deepcopy(s)
-                  makeMove(tmp, c)
-                  ns += [tmp]
+        for r in range(ROWS):  # pass on each row
+            for c in range(COLUMN):# pass on each column
+                if s[0][r][c] == 0:
+                    tmp = copy.deepcopy(s)
+                    makeMove(tmp, c)
+                    ns += [tmp]
+        return ns
     return ns
