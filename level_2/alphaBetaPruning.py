@@ -1,6 +1,6 @@
 import game
 import copy
-DEPTH=4
+DEPTH=5
 def go(s):
     if game.isHumTurn(s):
         return abmin(s,DEPTH,game.LOSS-1,game.VIC+1)[1]

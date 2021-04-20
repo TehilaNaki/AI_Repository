@@ -30,8 +30,7 @@ def create():
     board = []
     for i in range(ROWS):
         board = board + [COLUMN * [0]]  # Creat the board
-    return [board, 0.00001, HUMAN, ROWS * COLUMN, [ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1,
-                                                   ROWS - 1]]  # Creat "s" and set up the list of how many empty in each column
+    return [board, 0.00001, HUMAN, ROWS * COLUMN, [ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1, ROWS - 1,ROWS - 1]]  # Creat "s" and set up the list of how many empty in each column
 
 
 def value(s):
@@ -72,7 +71,7 @@ def isHumTurn(s):
 
 
 def whoIsFirst(s):
-    # The user decides who plays first
+   #  The user decides who plays first
     if int(input("Who plays first? 1-me / anything else-you. : ")) == 1:
         s[2] = COMPUTER
     else:
@@ -96,7 +95,11 @@ def checkSeq(s, r1, c1, r2, c2):
         return LOSS
     if sum > 0 and sum < COMPUTER:
         return -1
-    if sum > 0 and sum % COMPUTER == 0:
+    if sum > 0 and sum % COMPUTER == 0 and sum/COMPUTER==1:#for seq of 1
+        return 0.1
+    if sum > 0 and sum % COMPUTER == 0 and sum/COMPUTER==2:#for seq of 2
+        return 0.4
+    if sum > 0 and sum % COMPUTER == 0 and sum / COMPUTER == 3:#for seq of 3
         return 1
     return 0
 
@@ -116,13 +119,15 @@ def makeMove(s, c):
     s[1] = 0.00001
     for row in range(ROWS):
         for col in range(COLUMN):
-            for i in range(len(dr)):
-                t = checkSeq(s, row, col, row + dr[i], col + dc[i])
-                if t in [LOSS, VIC]:
-                    s[1] = t
-                    return
-                else:
-                    s[1] += t
+            if s[4][col]<=row:#check if the range is full
+             for i in range(len(dr)):
+                 t = checkSeq(s, row, col, row + dr[i], col + dc[i])
+                 if t in [LOSS, VIC]:
+                      s[1] = t
+                      return
+                 if (t==0.1 and s[4][c]<=1 and row<=1)or (t==0.4 and s[4][c]==0 and row==0):#dont mark up if it's can't make seq of 4
+                        t=-1
+                 s[1] += t
     if s[3] == 0:
         s[1] = TIE
 
@@ -145,15 +150,24 @@ def inputMove(s):
 def getNext(s):
     # returns a list of the next states of s
     ns = []
-    if s[3] == 42:
+    if s[3] == 42 or (s[3]==41 and s[4][3]==5): #Preference for a middle place at the beginning of the game
         tmp = copy.deepcopy(s)
         makeMove(tmp, 3)
         ns += [tmp]
+    elif s[3]==41 and s[4][1]==5: #block the down row
+        tmp = copy.deepcopy(s)
+        makeMove(tmp,1)
+        ns += [tmp]
+    elif s[3]==39 and s[4][5]==5:#block the down row
+        tmp = copy.deepcopy(s)
+        makeMove(tmp, 5)
+        ns += [tmp]
     else:
-        for r in range(ROWS):  # pass on each row
             for c in range(COLUMN):# pass on each column
-                if s[0][r][c] == 0:
-                    tmp = copy.deepcopy(s)
-                    makeMove(tmp, c)
-                    ns += [tmp]
+                 r=s[4][c]# on the next place
+                 if s[0][r][c]==0 and r>=0:
+                   tmp = copy.deepcopy(s)
+                   makeMove(tmp, c)
+                   ns += [tmp]
+    ns.sort(key=value,reverse=True) # sort the state list by value
     return ns
