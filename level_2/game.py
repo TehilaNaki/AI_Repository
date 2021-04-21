@@ -1,10 +1,10 @@
-
 '''
 Tehila Naki-323071571
 Merav Izhaki-322915430
 '''
 
 import copy
+
 VIC = 10 ** 20  # The value of a winning board (for max)
 LOSS = -VIC  # The value of a losing board (for max)
 TIE = 0  # The value of a tie
@@ -72,7 +72,7 @@ def isHumTurn(s):
 
 def whoIsFirst(s):
    #  The user decides who plays first
-    if input("Who plays first? 1-me / anything else-you. : ") == '1':
+    if int(input("Who plays first? 1-me / anything else-you. : ")) == 1:
         s[2] = COMPUTER
     else:
         s[2] == HUMAN
@@ -138,14 +138,14 @@ def inputMove(s):
     printState(s)
     flag = True
     while flag:
-            move =int(input("Enter your next place: "))
-            if move <= 0 or move > COLUMN:  # check if "move" is a legal index
-                   print("Illegal place.")
-            elif s[4][move - 1] == -1:  # check if the column is full
-                   print("Illegal place, the column is full.")
-            else:
-                  flag = False
-                  makeMove(s, move - 1)
+        move = int(input("Enter your next place: "))
+        if move <= 0 or move > COLUMN:  # check if "move" is a legal index
+            print("Illegal place.")
+        elif s[4][move - 1] == -1:  # check if the column is full
+            print("Illegal place, the column is full.")
+        else:
+            flag = False
+            makeMove(s, move - 1)
 
 
 def getNext(s):
