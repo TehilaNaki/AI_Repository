@@ -72,11 +72,10 @@ def isHumTurn(s):
 
 def whoIsFirst(s):
    #  The user decides who plays first
-    if int(input("Who plays first? 1-me / anything else-you. : ")) == 1:
+    if input("Who plays first? 1-me / anything else-you. : ") == '1':
         s[2] = COMPUTER
     else:
         s[2] == HUMAN
-
 
 def checkSeq(s, r1, c1, r2, c2):
     # r1, c1 are in the board. if r2,c2 not on board returns 0.
