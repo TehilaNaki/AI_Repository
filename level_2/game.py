@@ -132,6 +132,7 @@ def makeMove(s, c):
         s[1] = TIE
 
 
+
 def inputMove(s):
     # Reads, enforces legality and executes the user's move.
     printState(s)
