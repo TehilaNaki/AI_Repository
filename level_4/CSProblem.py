@@ -10,9 +10,10 @@
 
 def create(n):  # the board size is nXn
     d = []  # d is the domains
+    # puts the options in the domain
     for i in range(n):
         d += [list(range(n))]
-    return [[-1] * n, d]
+    return [[-1] * n, d]  #[[-1,-1,-1],[[1,2,3],[1,2,3],[1,2,3]]]
 
 
 def domain(problem, v):  # problem is the state, v is a variable (a row)
@@ -48,21 +49,21 @@ def get_list_of_free_vars(problem):
             l += [i]
     return l
 
-
+# check if the problem is solve
 def is_solved(problem):
-    # Returns True iff the problem is solved
+    # Returns True if the problem is solved
     for i in range(len(problem[0])):
         if problem[0][i] == -1:
             return False
     return True
 
-
+# check if the state is ok
 def is_consistent(problem, v1, v2, x1, x2):
-    # Returns True iff v1=x1 and v2=x2 is consistent with all constraints
+    # Returns True if v1=x1 and v2=x2 is consistent with all constraints
     return x1 != x2 and abs(v1 - v2) != abs(x1 - x2)  # x1!=x2 - not on the same col.
     # abs(v1-v2)!=abs(x1-x2) - not on the same diagonal
 
-
+# delete v from the free vars list
 def list_of_influenced_vars(problem, v):
     # Returns a list of vars. whose domain will be
     # influenced by assigning a val. to v
@@ -71,7 +72,7 @@ def list_of_influenced_vars(problem, v):
         l.remove(v)
     return l
 
-
+# print the board
 def present(problem):
     print()
     for r in range(len(problem[0])):
