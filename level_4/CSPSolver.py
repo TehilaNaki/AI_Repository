@@ -1,7 +1,11 @@
+'''
+Tehila Naki-323071571
+Merav Berkowitz (Izhaki)-322915430
+'''
+
+import math
 import CSProblem
 import copy
-import collections
-
 
 def solve(n):
     CSProblem.present(backtrack(CSProblem.create(n)))
@@ -21,30 +25,31 @@ def backtrack(p):
             return bu
     return p
 
-
+'''
+The function sort the domain by LCV
+'''
 def sorted_domain(p, var, LCV=True):
     if LCV == False:
         return CSProblem.domain(p, var)
-    dom = [[0,0]]
-    p1 = []
+
+    dom = []
     # for each option in the domain of var
     for item in p[1][var]:
         p1 = copy.deepcopy(p)
+        # insert item into var index
         CSProblem.assign_val(p1, var, item)
-        dif = difference(p1, var, item)
-        l=(item,dif)
-       # dom.insert([l])
+        # count the changes after assign val
+        dif = num_of_del_vals([p1, var, item])
+        # insert to the list like dict for sort
+        dom.insert(0,[item, dif])
+    # sort the dict by the key- second value:the option deleted
     sort = sorted(dom, key=second)
+    # return the index after sort
     return [i[0] for i in sort]
 
-
-def difference(p1, var, item):
-    before = num_of_del_vals(p1)
-    propagate_constraints(p1, var)  # delete the optione after choose i
-    after = num_of_del_vals(p1)
-    return before - after
-
-
+'''
+Help function for sort
+'''
 def second(p):
     return p[1]
 
@@ -60,7 +65,9 @@ def num_of_del_vals(l):
                 count += 1
     return count
 
-
+'''
+Function return the next val by MRV
+'''
 def next_var(p, MRV=True):
     # p is the problem
     # MRV - Minimum Remained Values
@@ -73,11 +80,20 @@ def next_var(p, MRV=True):
             return None
         else:
             return v[0]
-    lengs = [len(item) for item in p[1]]
-    index = lengs.index(min(lengs))
+    # make a list of the len-domain
+    lens = [len(item) for item in p[1]]
+    # set the start value
+    index=None
+    min=math.inf
+    # for each item in the len list
+    for i in range(len(lens)):
+        # check if not set and minimum
+        if(p[0][i]==-1 and lens[i]<min):
+            min =lens[i]
+            index=i
     return index
 
-
+# delete the forbidden options from domain
 def propagate_constraints(p, v):
     for i in CSProblem.list_of_influenced_vars(p, v):
         for x in CSProblem.domain(p, i):
